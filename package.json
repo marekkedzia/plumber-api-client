@@ -1,0 +1,37 @@
+{
+  "name": "@marekkedzia/plumber-api-client",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "author": "Marek Kedzia",
+  "license": "MIT",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "url": "git://github.com/marekkedza/plumber-api-client.git"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "axios": "^1.7.7",
+    "ts-opaque": "^3.0.1",
+    "tslib": "^2.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "typescript": "^5.2.2"
+  },
+  "moduleFileExtensions": [
+    "ts",
+    "js"
+  ]
+}
