@@ -1,1 +1,0 @@
-{"version":3,"file":"api.sdk.js","sourceRoot":"","sources":["../src/api.sdk.ts"],"names":[],"mappings":";;;AAAA,6CAAuC;AAGvC,MAAa,aAAa;IACZ,SAAS,CAAY;IAE/B,YAAY,iBAAoC;QAC5C,IAAI,CAAC,SAAS,GAAG,IAAI,sBAAS,CAAC,iBAAiB,CAAC,CAAC;IACtD,CAAC;CACJ;AAND,sCAMC"}
