@@ -35,7 +35,7 @@ export class ApiClient {
     };
 
     private requestInterceptor = async (request: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-        request.headers["Authorization"] = this.clientCredentials.authHeader;
+        request.headers["Authorization"] = this.clientCredentials.authHeader();
         return request;
     };
 

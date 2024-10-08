@@ -1,6 +1,4 @@
 export type ClientCredentials = {
-    clientSecret: string,
-    clientId: string,
-    authHeader: string | string[],
+    authHeader: () => (Promise<string> | string),
     url: string,
 }
