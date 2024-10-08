@@ -1,4 +1,6 @@
+import {AxiosHeaderValue} from "axios";
+
 export type ClientCredentials = {
-    authHeader: () => (Promise<string> | string),
+    authHeader: () => (Promise<AxiosHeaderValue> | AxiosHeaderValue),
     url: string,
 }
