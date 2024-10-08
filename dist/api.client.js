@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiClient = void 0;
 const tslib_1 = require("tslib");
 const axios_1 = tslib_1.__importDefault(require("axios"));
-const http_utils_1 = require("./schemas/http.utils");
-const api_call_error_1 = require("./schemas/api.call.error");
+const http_utils_1 = require("./interfaces/http.utils");
+const api_call_error_1 = require("./interfaces/api.call.error");
 class ApiClient {
     clientCredentials;
     api;
@@ -14,18 +14,20 @@ class ApiClient {
         this.api.interceptors.request.use(this.requestInterceptor);
     }
     call = async (parameters) => {
-        const retryCondition = (error) => {
-            const axiosError = error;
-            return !!axiosError?.status && axiosError.status >= http_utils_1.HttpStatus.INTERNAL_SERVER_ERROR;
-        };
         const requestFunc = async () => this.api.request({
             method: parameters.method,
             url: `${this.clientCredentials.url}${parameters.path}`,
             data: parameters.body,
         });
+        const retryCondition = (error) => {
+            //@ts-ignore
+            return !!error?.status && error.status >= http_utils_1.HttpStatus.INTERNAL_SERVER_ERROR;
+        };
         return this.makeRetryCall(requestFunc, retryCondition);
     };
-    buildQuery = (queryParameters) => `?${Object.keys(queryParameters).map(key => `${key}=${queryParameters[key]}`).join('&')} `;
+    buildQuery = (queryParameters) => {
+        return `?${Object.keys(queryParameters).map(key => `${key}=${queryParameters[key]}`).join('&')} `;
+    };
     requestInterceptor = async (request) => {
         request.headers["Authorization"] = this.clientCredentials.authHeader;
         return request;
@@ -36,8 +38,7 @@ class ApiClient {
             attempt += 1;
             return requestFunc().catch(async (error) => {
                 if (attempt > retries || !retryCondition(error)) {
-                    const axiosError = error;
-                    throw new api_call_error_1.ApiCallError(axiosError.code, JSON.stringify(axiosError.response?.data));
+                    throw new api_call_error_1.ApiCallError(error.code, JSON.stringify(error.response?.data));
                 }
                 if (beforeRetryHook)
                     await beforeRetryHook();

@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
-import { ClientCredentials } from "./schemas/client.credentials";
-import { HttpMethod } from "./schemas/http.utils";
+import { ClientCredentials } from "./interfaces/client.credentials";
+import { HttpMethod } from "./interfaces/http.utils";
 export declare class ApiClient {
     private clientCredentials;
     private api;

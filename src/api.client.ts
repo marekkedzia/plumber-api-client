@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
+import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {ClientCredentials} from "./interfaces/client.credentials";
 import {HttpMethod, HttpStatus} from "./interfaces/http.utils";
 import {ApiCallError} from "./interfaces/api.call.error";
@@ -22,7 +22,8 @@ export class ApiClient {
             data: parameters.body,
         });
 
-        const retryCondition = (error: AxiosError) => {
+        const retryCondition = (error: Error) => {
+            //@ts-ignore
             return !!error?.status && error.status >= HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
