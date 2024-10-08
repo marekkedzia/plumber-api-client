@@ -11,11 +11,11 @@ export class ApiClient {
         this.api.interceptors.request.use(this.requestInterceptor);
     }
 
-    call = async (parameters: {
+    call = async <T>(parameters: {
         method: HttpMethod,
         path: string,
         body?: unknown,
-    }): Promise<AxiosResponse> => {
+    }): Promise<T> => {
         const requestFunc = async (): Promise<AxiosResponse> => this.api.request({
             method: parameters.method,
             url: `${this.clientCredentials.url}${parameters.path}`,
@@ -27,7 +27,7 @@ export class ApiClient {
             return !!error?.status && error.status >= HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
-        return this.makeRetryCall(requestFunc, retryCondition);
+        return this.makeRetryCall(requestFunc, retryCondition).then(response => response.data as T);
     };
 
     buildQuery = (queryParameters: { [key: string]: string }): string => {
