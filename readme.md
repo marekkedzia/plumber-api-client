@@ -1,72 +1,102 @@
-# @marekkedzia/plumber-app
+# @marekkedzia/api-client
 
-`@marekkedzia/plumber-app` is a comprehensive Express.js middleware and utility library that provides robust error handling, internal storage management, validation, and logging capabilities designed to enhance and streamline the development of Express applications.
+`@marekkedzia/api-client` is a robust HTTP client library built on top of Axios, designed to simplify API integrations with features such as retry mechanisms, dynamic query building, and customizable authentication.
+
+---
 
 ## Features
 
-- **Error Handling**: Customizable error handling middleware to catch and respond to various HTTP errors.
-- **Internal Storage**: Utilizes `AsyncLocalStorage` for scoped request storage, enhancing traceability and debuggability.
-- **Validation**: Body and query validators using `zod` to ensure incoming requests meet expected formats.
-- **Logging**: Integrated logging setup using Winston for detailed and color-coded logging.
-- **Utilities**: Helper functions like `getOrThrow` for safer data retrieval and `unless` for conditional middleware execution.
+- **Retry Mechanism**: Automatically retries failed requests based on customizable conditions.
+- **Authentication**: Supports dynamic authorization headers using client-provided credentials.
+- **Query Building**: Easily build query strings from parameter objects.
+- **Error Handling**: Throws detailed, structured errors for easier debugging and handling in application logic.
+- **Flexible Configuration**: Works seamlessly with any RESTful API by providing customizable request options.
+
+---
 
 ## Installation
 
-This package is hosted on a GitHub Package Registry, ensure you have the correct access tokens and configuration to interact with GitHub packages.
+Install the package via npm:
 
-1. **Configure npm for GitHub Packages:**
+```bash
+npm install @marekkedzia/api-client
+```
 
-   You may need to create or edit your `~/.npmrc` file to include a line specifying GitHub's package registry URL and your personal access token:
-
-   ```sh
-   @marekkedzia:registry=https://npm.pkg.github.com/
-   //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN
-   ```
-
-2. **Install the package:**
-
-   ```sh
-   npm install @marekkedzia/plumber-app
-   ```
+---
 
 ## Usage
 
 ### Basic Setup
 
-To integrate `@marekkedzia/plumber-app` into your Express application:
+To integrate `@marekkedzia/api-client` into your application:
 
-```javascript
-const express = require('express');
-const { getPlumberApp } = require('@marekkedzia/plumber-app');
+```typescript
+import { ApiClient } from '@marekkedzia/api-client';
 
-const appConfig = {
-    cors: 'https://yourdomain.com',
-    urlPrefix: '/api',
-    routers: [/* your plumber routers here */],
-    auth: [{
-        middleware: (req, res, next) => {/* authentication logic */},
-        unless: ['/public']
-    }]
+const client = new ApiClient({
+    url: 'https://api.yourservice.com',
+    authHeader: async () => 'Bearer your-token', // Custom function to fetch authorization headers
+});
+
+const fetchData = async () => {
+    try {
+        const response = await client.call({
+            method: 'GET',
+            path: '/data',
+        });
+        console.log(response);
+    } catch (error) {
+        console.error('API call failed:', error);
+    }
 };
 
-const app = getPlumberApp(appConfig);
+fetchData();
+```
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+---
+
+### Advanced Features
+
+#### Retry Mechanism
+The retry logic is customizable and handles transient errors like `5xx` responses by default. You can provide:
+- **Custom retry conditions**
+- **Before-retry hooks**
+
+Example:
+```typescript
+await client.call({
+    method: 'POST',
+    path: '/submit',
+    body: { key: 'value' },
 });
 ```
 
-### Advanced Configuration
+#### Query Builder
+Quickly create query strings for GET requests:
+```typescript
+const query = client.buildQuery({ search: 'term', page: '1' });
+// Result: "?search=term&page=1"
+```
 
-Refer to the exported modules to customize your application further:
-
-- **Error Handling**: Customize how errors are caught and handled across your app.
-- **Internal Storage**: Use the provided methods to manage request-scoped storage throughout the application lifecycle.
-- **Validators**: Use `validateBody` and `validateQuery` to enforce data integrity before handling business logic.
+---
 
 ## Contributing
 
-Contributions are welcome! Please refer to the repository's issues tab on GitHub to report bugs or suggest features.
+Contributions are welcome! Please open issues or submit pull requests for feature requests or bug fixes.
+
+---
+
+## Author
+
+**Marek Kędzia**  
+Developer of tools and libraries to enhance API integrations.
+
+---
+
+## About
+
+`@marekkedzia/api-client` is a TypeScript-based HTTP client library designed for flexibility and reliability, ideal for applications requiring seamless API communication.
+
 
 ## Author
 
